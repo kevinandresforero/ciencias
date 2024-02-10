@@ -1,6 +1,9 @@
 Proyecto 1
+
+    Habitabilidad de un edicficio o Estructura con respecto a ruido o a temperatura
+
     Diagrama de Clases
     Estructuras de Datos
     Una dimensión:
-        - RUIDO 
+        - RUIDO
         - TEMPERATURA
