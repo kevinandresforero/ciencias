@@ -5,6 +5,7 @@ import datetime
 
 productos = []
 personas = []
+transacciones = []
 
 
 def convertirAHash(ccDueno, ccComprador, idproducto, fecha):
@@ -56,26 +57,57 @@ for x in range(10):
     productos.append(producto)
 
 
-def encontrar_duenos_de_productos(productos, personas):
-    duenos = []  # Lista para guardar los dueños encontrados
-    for producto in productos:
-        cc_dueno = producto["dueno"]
-        for persona in personas:
-            if persona.cc == cc_dueno:
-                duenos.append(persona)
-                break  # Rompe el loop interno una vez que encuentres al dueño
-    return duenos
-
-
-duenos = encontrar_duenos_de_productos(productos, personas)
-for dueno in duenos:
-    print(f"Dueño: {dueno.nombre}, CC: {dueno.cc}")
-
-
 class transaccion:
-    def __init__(self, ccDueño, ccComprador, idProducto):
+    def __init__(self, ccDuenoE, ccComprador, idProductoE):
         self.fecha = fecha_hora_actual = str(datetime.datetime.now())
-        self.id = convertirAHash(ccDueno, ccComprador, idproducto, self.fecha)
-        self.ccDueño = ccDueño
+        self.id = convertirAHash(
+            str(ccDuenoE), str(ccComprador), str(idProductoE), self.fecha)
+        self.ccDueño = ccDuenoE
         self.ccComprador = ccComprador
-        self.idProducto = idProducto
+        self.idProducto = idProductoE
+
+
+if productos:
+    producto_aleatorio = random.choice(productos)
+    # Obtiene el cc del dueño del producto seleccionado
+    cc_dueño_producto_aleatorio = producto_aleatorio['dueno']
+    # Selecciona un comprador aleatorio diferente al dueño actual
+    compradores_potenciales = [
+        persona for persona in personas if persona.cc != cc_dueño_producto_aleatorio]
+    if not compradores_potenciales:  # Verifica si hay compradores potenciales
+        print("No hay compradores potenciales disponibles.")
+        exit()
+    comprador_aleatorio = random.choice(compradores_potenciales)
+    # Crea la transacción con el dueño actual, un comprador aleatorio, y el ID del producto aleatorio
+    nueva_transaccion = transaccion(
+        cc_dueño_producto_aleatorio, comprador_aleatorio.cc, producto_aleatorio['id'])
+    transacciones.append(nueva_transaccion)  # Guarda la nueva transacción
+
+    # Actualiza el dueño del producto en la lista de productos
+    for producto in productos:
+        if producto['id'] == producto_aleatorio['id']:
+            # Actualiza el dueño del producto al comprador
+            producto['dueno'] = comprador_aleatorio.cc
+            break  # Sale del bucle una vez que el producto ha sido actualizado
+
+else:
+    print("No hay productos disponibles para crear una transacción.")
+
+
+def imprimir_transacciones(transacciones):
+    if not transacciones:
+        print("No se han realizado transacciones.")
+        return
+
+    for transaccion in transacciones:
+        print(f"Transacción ID: {transaccion.id}")
+        print(f"Fecha: {transaccion.fecha}")
+        # Asegúrate de que el nombre del atributo sea correcto
+        print(f"CC Dueño: {transaccion.ccDueño}")
+        print(f"CC Comprador: {transaccion.ccComprador}")
+        print(f"ID Producto: {transaccion.idProducto}")
+        print("-----")
+
+
+# Llama a la función para imprimir las transacciones
+imprimir_transacciones(transacciones)
