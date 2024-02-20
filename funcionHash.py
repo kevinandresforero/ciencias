@@ -7,18 +7,26 @@ productos = []
 personas = []
 
 
-def convertirAHash(ccDueno, ccComprador, fecha, idproducto):
-    hashccDueno = sum([ord(x) for x in ccDueno])
-    hashccComprador = sum([ord(x) for x in ccComprador])
-    hashFecha = sum([ord(x) for x in fecha])
-    hashIdProducto = sum([ord(x) for x in idproducto])
-    return hashccDueno+hashccComprador+hashFecha+hashIdProducto
+def convertirAHash(ccDueno, ccComprador, idproducto, fecha):
+    primo1 = 31
+    primo2 = 37
+    primo3 = 41
+    primo4 = 43
+
+    # Convertimos cada parte del input en un hash numérico simple sumando los valores ASCII de cada carácter.
+    hashccDueno = sum([ord(x) for x in ccDueno]) * primo1
+    hashccComprador = sum([ord(x) for x in ccComprador]) * primo2
+    hashFecha = sum([ord(x) for x in fecha]) * primo3
+    hashIdProducto = sum([ord(x) for x in idproducto]) * primo4
+
+    # Combinamos los hashes con una operación simple. Podrías elegir otras operaciones para combinar estos valores.
+    hashFinal = hashccDueno + hashccComprador + hashFecha + hashIdProducto
+
+    return hashFinal
 
 
 # Usando datetime.datetime.now() para obtener fecha y hora actual
 fecha_hora_actual = str(datetime.datetime.now())
-
-print(convertirAHash("123", "123", fecha_hora_actual, "qrt"))
 
 
 class persona:
@@ -38,9 +46,6 @@ personas.append(persona(12380, "Julanito8"))
 personas.append(persona(12390, "Julanito9"))
 personas.append(persona(12310, "Julanito10"))
 
-
-tiempoAntes = time.time()
-
 for x in range(10):
     producto = {
         "id": x,
@@ -51,7 +56,26 @@ for x in range(10):
     productos.append(producto)
 
 
+def encontrar_duenos_de_productos(productos, personas):
+    duenos = []  # Lista para guardar los dueños encontrados
+    for producto in productos:
+        cc_dueno = producto["dueno"]
+        for persona in personas:
+            if persona.cc == cc_dueno:
+                duenos.append(persona)
+                break  # Rompe el loop interno una vez que encuentres al dueño
+    return duenos
+
+
+duenos = encontrar_duenos_de_productos(productos, personas)
+for dueno in duenos:
+    print(f"Dueño: {dueno.nombre}, CC: {dueno.cc}")
+
+
 class transaccion:
-    def __init__(self, ccDueño, ccComprador):
-        self.id = ccDueño + ccComprador + str(datetime.datetime)
-        self.detalle = ccDueño + ccComprador + str(datetime.datetime)
+    def __init__(self, ccDueño, ccComprador, idProducto):
+        self.fecha = fecha_hora_actual = str(datetime.datetime.now())
+        self.id = convertirAHash(ccDueno, ccComprador, idproducto, self.fecha)
+        self.ccDueño = ccDueño
+        self.ccComprador = ccComprador
+        self.idProducto = idProducto
